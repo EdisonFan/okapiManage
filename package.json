@@ -27,5 +27,8 @@
     "koa-route": "^3.2.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.4"
+  },
+  "devDependencies": {
+    "antd": "^3.6.4"
   }
 }
