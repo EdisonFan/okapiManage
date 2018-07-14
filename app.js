@@ -5,6 +5,7 @@ const app = new Koa();
 const serve = require('koa-static');
 const proxy=require('./proxy-okapi');
 const path = require('path');
+let program = require('commander');
 const proxyokapi = async (ctx, next) => {
     let pathArray = ctx.path.split('/');
     if (pathArray[1] === 'proxy') {
@@ -13,12 +14,14 @@ const proxyokapi = async (ctx, next) => {
         await next()
     }
 }
-
-console.log("__dirname=",__dirname);
-
+program
+  .version('0.0.1')
+  .option('-p, --port <n>', 'running on port', parseInt)
+  .parse(process.argv);
 app.use(bodyParser());
 app.use(proxyokapi);
 app.use(serve(path.join(__dirname, './build')));
-app.listen(3001,()=>{
-    console.log('running on 3001');
+const port=program.port||3000;
+app.listen(port,()=>{
+    console.log('running on %j',port);
 });

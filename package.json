@@ -20,5 +20,8 @@
   },
   "bin": {
     "webokapi": "./app.js"
+  },
+  "devDependencies": {
+    "commander": "^2.16.0"
   }
 }
