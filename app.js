@@ -1,21 +1,24 @@
+#!/usr/bin/env node
 const Koa = require('koa');
-const route = require('koa-route');
-var index = require('./routes/index');
+const bodyParser = require('koa-bodyparser');
 const app = new Koa();
-const fs = require('fs.promised');
-
-const logger = (ctx, next) => {
-    console.log(`${Date.now()} ${ctx.request.method} ${ctx.request.url}`);
-    next()
+const serve = require('koa-static');
+const proxy=require('./proxy-okapi');
+const path = require('path');
+const proxyokapi = async (ctx, next) => {
+    let pathArray = ctx.path.split('/');
+    if (pathArray[1] === 'proxy') {
+       ctx=await proxy(ctx);
+    } else {
+        await next()
+    }
 }
 
-const other = async function (ctx, next) {
-    ctx.response.type = 'html';
-    let r=await fs.readFile('./views/index.html', 'utf8');
-    ctx.response.body =r;
-    next()
-};
-app.use(logger);
-app.use(other);
+console.log("__dirname=",__dirname);
 
-app.listen(3001);
+app.use(bodyParser());
+app.use(proxyokapi);
+app.use(serve(path.join(__dirname, './build')));
+app.listen(3001,()=>{
+    console.log('running on 3001');
+});
