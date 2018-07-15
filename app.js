@@ -21,7 +21,8 @@ program
 app.use(bodyParser());
 app.use(proxyokapi);
 app.use(serve(path.join(__dirname, './build')));
+
 const port=program.port||3000;
 app.listen(port,()=>{
-    console.log('running on %j',port);
+    console.log('web-okapi-serve is running on %j',port);
 });
